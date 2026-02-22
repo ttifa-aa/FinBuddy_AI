@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
     }
 
     // Use AI to generate predictions
-    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const apiKey = Deno.env.get("GROQ_API_KEY");
     const txSummary = transactions.slice(0, 100).map(t => `${t.date}: ${t.category} ${t.amount}`).join("\n");
 
     const today = new Date().toISOString().slice(0, 10);
@@ -83,11 +83,11 @@ Deno.serve(async (req) => {
     let aiInsight = "";
     if (apiKey) {
       try {
-        const aiRes = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        const aiRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
           method: "POST",
           headers: { "Authorization": `Bearer ${apiKey}`, "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "google/gemini-3-flash-preview",
+            model: "llama-3.3-70b-versatile",
             messages: [
               { role: "system", content: "You are a concise financial advisor. Given spending data, provide ONE brief actionable insight in 1-2 sentences. No markdown." },
               { role: "user", content: `My recent transactions:\n${txSummary}\n\nMonthly average: ${monthlyAvg.toFixed(2)}. Current month projection: ${monthEstimate}. Typical 3-month average: ${typicalSpend}. Give me a brief insight.` }
