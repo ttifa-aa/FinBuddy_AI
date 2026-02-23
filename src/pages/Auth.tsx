@@ -120,6 +120,12 @@ export default function Auth() {
             </button>
           </p>
         </form>
+
+        <div className="text-center mt-6 text-xs text-muted-foreground space-y-1">
+          <p>Copyright © 2026 Aatifa Tahmeed, Samreen Kausar, Sk. Musqan Khadri</p>
+          <p>Dr. Jayashree Patil, Associate Professor</p>
+        </div>
+
       </div>
     </div>
   );
