@@ -132,8 +132,17 @@ export function useUpdateProfile() {
   });
 }
 
+export function getCurrentMonth(): string {
+  return new Date().toISOString().slice(0, 7); // "YYYY-MM"
+}
+
+export function filterCurrentMonth(transactions: Transaction[]): Transaction[] {
+  const month = getCurrentMonth();
+  return transactions.filter((t) => t.date.startsWith(month));
+}
+
 export function getSpendingTotal(transactions: Transaction[]): number {
-  return transactions.reduce((sum, t) => sum + Number(t.amount), 0);
+  return filterCurrentMonth(transactions).reduce((sum, t) => sum + Number(t.amount), 0);
 }
 
 export function getForecast(transactions: Transaction[]): number {
@@ -148,7 +157,7 @@ export function getSavings(budget: number, transactions: Transaction[]): number 
 }
 
 export function getCategoryTotal(transactions: Transaction[], category: string): number {
-  return transactions
+  return filterCurrentMonth(transactions)
     .filter((t) => t.category.toLowerCase() === category.toLowerCase())
     .reduce((s, t) => s + Number(t.amount), 0);
 }
