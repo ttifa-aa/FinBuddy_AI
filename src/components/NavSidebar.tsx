@@ -1,8 +1,9 @@
-import { LayoutDashboard, CreditCard, TrendingUp, Brain, Settings, LogOut, Menu, X, Moon, Sun } from "lucide-react";
+import { LayoutDashboard, CreditCard, TrendingUp, Brain, Settings, LogOut, Menu, X, Moon, Sun, Bell } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
+import { useUnreadCount, useNotifications, useDismissNotification } from "@/hooks/use-notifications";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", path: "/" },
@@ -17,6 +18,12 @@ export function NavSidebar() {
   const { theme, toggleTheme } = useTheme();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const unreadCount = useUnreadCount();
+  const { data: notifications = [] } = useNotifications();
+  const dismiss = useDismissNotification();
+
+  const recent = notifications.slice(0, 10);
 
   const navContent = (
     <>
@@ -46,6 +53,88 @@ export function NavSidebar() {
       </nav>
 
       <div className="p-3 border-t border-sidebar-border space-y-1">
+        {/* Notification Bell */}
+        <div className="relative">
+          <button
+            onClick={() => setNotifOpen((v) => !v)}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-secondary-foreground/60 hover:text-secondary-foreground hover:bg-sidebar-accent transition-all"
+          >
+            <div className="relative">
+              <Bell className="h-4 w-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-accent text-accent-foreground text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center">
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </div>
+            Notifications
+            {unreadCount > 0 && (
+              <span className="ml-auto bg-accent text-accent-foreground text-xs font-bold px-1.5 py-0.5 rounded-full">
+                {unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* Notification dropdown panel */}
+          {notifOpen && (
+            <>
+              {/* Backdrop */}
+              <div
+                className="fixed inset-0 z-30"
+                onClick={() => setNotifOpen(false)}
+              />
+              <div className="absolute bottom-full left-0 mb-2 w-80 bg-card border border-border rounded-xl shadow-xl z-40 overflow-hidden">
+                <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+                  <span className="text-sm font-bold text-card-foreground">Notifications</span>
+                  {unreadCount > 0 && (
+                    <span className="text-xs text-muted-foreground">{unreadCount} unread</span>
+                  )}
+                </div>
+                <div className="max-h-80 overflow-y-auto">
+                  {recent.length === 0 ? (
+                    <div className="px-4 py-8 text-center">
+                      <p className="text-sm font-medium text-muted-foreground">All clear! 🎉</p>
+                      <p className="text-xs text-muted-foreground mt-1">No alerts or overspending detected</p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-border/50">
+                      {recent.map((n) => (
+                        <div
+                          key={n.id}
+                          className={`px-4 py-3 flex items-start gap-3 text-sm ${n.dismissed ? "opacity-40" : ""}`}
+                        >
+                          <div
+                            className={`mt-1 w-2 h-2 rounded-full flex-shrink-0 ${
+                              n.level === "critical"
+                                ? "bg-red-500"
+                                : n.level === "warning"
+                                ? "bg-yellow-500"
+                                : "bg-blue-400"
+                            }`}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-card-foreground leading-snug text-xs">{n.message}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {new Date(n.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                          {!n.dismissed && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); dismiss.mutate(n.id); }}
+                              className="text-xs text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
+                            >
+                              ✕
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
         <button
           onClick={toggleTheme}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-secondary-foreground/60 hover:text-secondary-foreground hover:bg-sidebar-accent transition-all"

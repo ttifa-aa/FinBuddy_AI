@@ -22,6 +22,7 @@ export function useNotifications() {
       const { data, error } = await supabase
         .from("notifications")
         .select("*")
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false })
         .limit(50);
 
@@ -31,15 +32,20 @@ export function useNotifications() {
     enabled: !!user,
   });
 
-  // Realtime subscription
+  // Realtime subscription — filtered to this user only
   useEffect(() => {
     if (!user) return;
 
     const channel = supabase
-      .channel("notifications-realtime")
+      .channel(`notifications-realtime-${user.id}`)
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "notifications" },
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
+        },
         () => {
           queryClient.invalidateQueries({ queryKey: ["notifications"] });
         }
@@ -52,6 +58,11 @@ export function useNotifications() {
   }, [user, queryClient]);
 
   return query;
+}
+
+export function useUnreadCount() {
+  const { data: notifications = [] } = useNotifications();
+  return notifications.filter((n) => !n.dismissed).length;
 }
 
 export function useDismissNotification() {
