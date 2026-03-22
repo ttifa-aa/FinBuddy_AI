@@ -22,27 +22,14 @@ export default function Predictions() {
     const fetchPredictions = async () => {
       setLoading(true);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) throw new Error("Not logged in");
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) throw new Error("Not logged in");
 
-        const res = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/predict-spending`,
-          {
-            method: "POST",
-            headers: {
-              "Authorization": `Bearer ${session.access_token}`,
-              "apikey": import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({}),
-          }
-        );
+        const { data: resData, error: fnError } = await supabase.functions.invoke("predict-spending", {
+          body: {},
+        });
 
-        if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || "Failed to load predictions");
-        }
-        const resData = await res.json();
+        if (fnError) throw new Error(fnError.message || "Failed to load predictions");
         setData(resData);
       } catch (err: any) {
         setError(err.message || "Failed to load predictions");

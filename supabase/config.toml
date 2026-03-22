@@ -2,3 +2,6 @@ project_id = "rzugickaajqfpkrtrbkg"
 
 [functions.chat-analytics]
 verify_jwt = false
+
+[functions.predict-spending]
+verify_jwt = false
