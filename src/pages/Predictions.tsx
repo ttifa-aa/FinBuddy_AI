@@ -124,14 +124,14 @@ export default function Predictions() {
         </div>
       </div>
 
-      {/* Confidence Section - Shows prediction reliability */}
+      // Confidence Section - Shows prediction reliability
       <div className="bg-card rounded-xl p-5 shadow-sm mb-6">
         <div className="flex items-center gap-2 text-sm font-semibold text-card-foreground mb-2">
           <Brain className="h-4 w-4 text-primary" /> Prediction Confidence
         </div>
         <p className="text-sm text-card-foreground/80">{data.confidence}</p>
 
-        {/* Visual confidence meter - width based on data months */}
+        // Visual confidence meter - width based on data months
         <div className="mt-3 w-full bg-muted rounded-full h-2">
           <div
             className="h-2 rounded-full bg-primary transition-all"
@@ -143,7 +143,7 @@ export default function Predictions() {
         </p>
       </div>
 
-      {/* AI Insight Section - Personalized AI-generated advice */}
+      // AI Insight Section - Personalized AI-generated advice
       {data.aiInsight && (
         <div className="bg-card rounded-xl p-5 shadow-sm border border-primary/20">
           <div className="flex items-center gap-2 text-sm font-bold text-card-foreground mb-2">

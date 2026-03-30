@@ -26,13 +26,13 @@ const NotFound = () => {
     // Full-screen container with muted background
     <div className="flex min-h-screen items-center justify-center bg-muted">
       <div className="text-center">
-        {/* Large 404 heading */}
+        // Large 404 heading
         <h1 className="mb-4 text-4xl font-bold">404</h1>
 
-        {/* Error message */}
+        // Error message
         <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
 
-        {/* Link back to home page */}
+        // Link back to home page
         <a href="/" className="text-primary underline hover:text-primary/90">
           Return to Home
         </a>
