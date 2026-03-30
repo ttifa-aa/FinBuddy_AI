@@ -132,7 +132,6 @@ export default function Auth() {
             <ArrowRight className="h-4 w-4" />
           </button>
 
-          
           <p className="text-center text-sm text-muted-foreground">
             {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
             <button
@@ -145,7 +144,6 @@ export default function Auth() {
           </p>
         </form>
 
-        
         <div className="text-center mt-6 text-xs text-muted-foreground space-y-1">
           <p>Copyright © 2026 Aatifa Tahmeed, Samreen Kausar, Sk. Musqan Khadri</p>
           <p>Dr. Jayashree Patil, Associate Professor</p>
