@@ -86,7 +86,7 @@ export default function Predictions() {
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <div>
-      {/* Page Header */}
+      // Page Header
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <Brain className="h-6 w-6 text-primary" /> AI Predictions
@@ -94,9 +94,9 @@ export default function Predictions() {
         <p className="text-sm text-muted-foreground mt-1">Smart spending projections based on your history</p>
       </div>
 
-      {/* Prediction Cards Grid - Three main spending projections */}
+      // Prediction Cards Grid - Three main spending projections
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
-        {/* Weekly Estimate Card */}
+        // Weekly Estimate Card
         <div className="bg-card rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 text-sm font-semibold text-card-foreground/60 mb-2">
             <TrendingUp className="h-4 w-4" /> Expected This Week
@@ -105,7 +105,7 @@ export default function Predictions() {
           <p className="text-xs text-muted-foreground mt-1">Based on current daily average</p>
         </div>
 
-        {/* Monthly Estimate Card */}
+        // Monthly Estimate Card
         <div className="bg-card rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 text-sm font-semibold text-card-foreground/60 mb-2">
             <Target className="h-4 w-4" /> Expected This Month
@@ -114,7 +114,7 @@ export default function Predictions() {
           <p className="text-xs text-muted-foreground mt-1">Projected 30-day total</p>
         </div>
 
-        {/* Typical Monthly Spend Card */}
+        // Typical Monthly Spend Card
         <div className="bg-card rounded-xl p-5 shadow-sm">
           <div className="flex items-center gap-2 text-sm font-semibold text-card-foreground/60 mb-2">
             <ShieldCheck className="h-4 w-4" /> Typical Monthly Spend
