@@ -1,46 +1,34 @@
-// Auth Page Component
-// This component handles user authentication (sign in and sign up) for the FinBuddy application
-// Uses Supabase Auth for backend authentication services
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
-
-// ── COMPONENT DEFINITION ───────────────────────────────────────────────────
+// This component provides a user interface for signing in and signing up using Supabase authentication.
+// It includes form fields for email, password, and display name (for sign up), as well as error handling and loading states.
+// The component also allows users to toggle between the sign in and sign up forms, and displays appropriate messages based on the authentication process.
 export default function Auth() {
-  // ── STATE MANAGEMENT ──────────────────────────────────────────────────────
-  // Form mode: true for login, false for signup
   const [isLogin, setIsLogin] = useState(true);
-
-  // Form field values
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
-
-  // UI state for feedback
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ── FORM SUBMISSION HANDLER ───────────────────────────────────────────────
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission
-    setError(""); // Clear previous errors
-    setMessage(""); // Clear previous messages
-    setLoading(true); // Show loading state
+  const handleSubmit = async (e: React.FormEvent) => { // handle form submission for both sign in and sign up
+    e.preventDefault(); // prevent the default form submission behavior to handle it with JavaScript
+    setError(""); // reset any existing error messages
+    setMessage(""); // reset any existing informational messages
+    setLoading(true); // set the loading state to true to indicate that an authentication process is in progress
 
     if (isLogin) {
-      // Sign in with existing account
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) setError(error.message);
     } else {
-      // Sign up for new account
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin, // Redirect after email confirmation
-          data: { display_name: displayName }, // Additional user metadata
+          emailRedirectTo: window.location.origin,
+          data: { display_name: displayName },
         },
       });
       if (error) {
@@ -49,15 +37,12 @@ export default function Auth() {
         setMessage("Check your email for a confirmation link!");
       }
     }
-    setLoading(false); // Hide loading state
+    setLoading(false);
   };
 
-  // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      {/* Main auth container with responsive width */}
       <div className="w-full max-w-md">
-        {/* Header section with branding */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-foreground">🤖 FinBuddy</h1>
           <p className="text-muted-foreground mt-2 text-sm font-medium">
@@ -65,9 +50,7 @@ export default function Auth() {
           </p>
         </div>
 
-        {/* Authentication form */}
         <form onSubmit={handleSubmit} className="bg-card rounded-xl p-8 shadow-sm space-y-5">
-          {/* Display name field - only shown during signup */}
           {!isLogin && (
             <div>
               <label className="text-sm font-semibold text-card-foreground mb-1.5 block">Display Name</label>
@@ -85,7 +68,6 @@ export default function Auth() {
             </div>
           )}
 
-          {/* Email input field */}
           <div>
             <label className="text-sm font-semibold text-card-foreground mb-1.5 block">Email</label>
             <div className="relative">
@@ -101,7 +83,6 @@ export default function Auth() {
             </div>
           </div>
 
-          {/* Password input field */}
           <div>
             <label className="text-sm font-semibold text-card-foreground mb-1.5 block">Password</label>
             <div className="relative">
@@ -118,11 +99,9 @@ export default function Auth() {
             </div>
           </div>
 
-          {/* Error and success message display */}
           {error && <p className="text-sm text-accent font-medium">{error}</p>}
           {message && <p className="text-sm text-primary font-medium">{message}</p>}
 
-          {/* Submit button with loading state */}
           <button
             type="submit"
             disabled={loading}
@@ -133,7 +112,7 @@ export default function Auth() {
           </button>
 
           <p className="text-center text-sm text-muted-foreground">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
+            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "} // toggle between sign in and sign up forms, and reset error and message states when toggling
             <button
               type="button"
               onClick={() => { setIsLogin(!isLogin); setError(""); setMessage(""); }}
@@ -143,7 +122,7 @@ export default function Auth() {
             </button>
           </p>
         </form>
-
+          // Footer with copyright and credits
         <div className="text-center mt-6 text-xs text-muted-foreground space-y-1">
           <p>Copyright © 2026 Aatifa Tahmeed, Samreen Kausar, Sk. Musqan Khadri</p>
           <p>Dr. Jayashree Patil, Associate Professor</p>

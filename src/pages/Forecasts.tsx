@@ -1,14 +1,3 @@
-// Forecasts Page Component
-// This component provides comprehensive financial analytics and visualizations
-// Displays spending breakdowns, trends, and insights through interactive charts
-// Features include:
-// - Pie chart showing spending by category
-// - Bar chart showing daily spending patterns
-// - Line chart showing category trends over time
-// - Week-over-week spending comparison
-// - Top merchants list
-// - Date range and category filtering
-
 import { useState, useMemo } from "react";
 import { useTransactions, getSpendingTotal } from "@/hooks/use-transactions";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -19,28 +8,21 @@ import {
 } from "recharts";
 import { CalendarDays, Filter, TrendingUp } from "lucide-react";
 
-// ── CHART COLORS ───────────────────────────────────────────────────────────
-// Color palette for chart visualizations using HSL values that match the theme
 const CHART_COLORS = [
   "hsl(352, 36%, 43%)", "hsl(198, 15%, 55%)", "hsl(356, 10%, 62%)",
   "hsl(1, 29%, 47%)", "hsl(30, 50%, 55%)", "hsl(160, 40%, 45%)",
   "hsl(220, 40%, 55%)", "hsl(280, 35%, 50%)",
 ];
 
-// ── COMPONENT DEFINITION ───────────────────────────────────────────────────
 export default function Forecasts() {
-  // ── HOOKS AND STATE ───────────────────────────────────────────────────────
-  const { data: transactions = [] } = useTransactions(); // Fetch user transactions from Supabase
-  const { format, symbol } = useCurrency(); // Currency formatting utilities
+  const { data: transactions = [] } = useTransactions();
+  const { format, symbol } = useCurrency();
 
-  // Filter state for date range and category selection
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // ── DATA PROCESSING ───────────────────────────────────────────────────────
-
-  // Filter transactions by selected date range
+  // Filtered transactions by date range
   const dateFiltered = useMemo(() => {
     return transactions.filter((t) => {
       if (dateFrom && t.date < dateFrom) return false;
@@ -49,13 +31,13 @@ export default function Forecasts() {
     });
   }, [transactions, dateFrom, dateTo]);
 
-  // Extract all unique categories from transactions for filter dropdown
+  // All unique categories
   const categories = useMemo(() => {
     const cats = new Set(transactions.map((t) => t.category));
     return Array.from(cats).sort();
   }, [transactions]);
 
-  // ── PIE CHART DATA: Spending by category ──────────────────────────────────
+  // === Pie Chart: Spending by category ===
   const categoryData = useMemo(() => {
     const map: Record<string, number> = {};
     dateFiltered.forEach((t) => {
@@ -63,16 +45,15 @@ export default function Forecasts() {
     });
     const result = Object.entries(map)
       .map(([name, value]) => ({ name, value: Math.round(value * 100) / 100 }))
-      .sort((a, b) => b.value - a.value); // Sort by value descending
+      .sort((a, b) => b.value - a.value);
     return result;
   }, [dateFiltered]);
 
-  const maxCategoryIndex = 0; // Already sorted, so first item is largest
+  const maxCategoryIndex = 0; // Already sorted desc
 
-  // ── BAR CHART DATA: Daily spending ────────────────────────────────────────
+  // === Bar Chart: Daily spending ===
   const dailyData = useMemo(() => {
     const map: Record<string, number> = {};
-    // Filter by selected category if not "all"
     const filtered = selectedCategory === "all"
       ? dateFiltered
       : dateFiltered.filter((t) => t.category === selectedCategory);
@@ -80,16 +61,13 @@ export default function Forecasts() {
       map[t.date] = (map[t.date] || 0) + Number(t.amount);
     });
     return Object.entries(map)
-      .sort(([a], [b]) => a.localeCompare(b)) // Sort by date
-      .map(([date, total]) => ({
-        date: date.slice(5), // Show MM-DD format
-        total: Math.round(total * 100) / 100
-      }));
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, total]) => ({ date: date.slice(5), total: Math.round(total * 100) / 100 }));
   }, [dateFiltered, selectedCategory]);
 
-  // ── LINE CHART DATA: Category trend ───────────────────────────────────────
+  // === Category trend line ===
   const categoryTrend = useMemo(() => {
-    if (selectedCategory === "all") return []; // No trend for "all categories"
+    if (selectedCategory === "all") return [];
     const map: Record<string, number> = {};
     transactions
       .filter((t) => t.category === selectedCategory)
@@ -98,19 +76,16 @@ export default function Forecasts() {
       });
     return Object.entries(map)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([date, total]) => ({
-        date: date.slice(5),
-        total: Math.round(total * 100) / 100
-      }));
+      .map(([date, total]) => ({ date: date.slice(5), total: Math.round(total * 100) / 100 }));
   }, [transactions, selectedCategory]);
 
-  // ── WEEK COMPARISON DATA ──────────────────────────────────────────────────
+  // === Week comparison ===
   const weekComparison = useMemo(() => {
     const now = new Date();
     const startOfWeek = new Date(now);
-    startOfWeek.setDate(now.getDate() - now.getDay()); // Start of current week (Sunday)
+    startOfWeek.setDate(now.getDate() - now.getDay());
     const startOfLastWeek = new Date(startOfWeek);
-    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7); // Start of last week
+    startOfLastWeek.setDate(startOfLastWeek.getDate() - 7);
 
     const fmt = (d: Date) => d.toISOString().slice(0, 10);
     const thisWeekStart = fmt(startOfWeek);
@@ -121,30 +96,22 @@ export default function Forecasts() {
       if (t.date >= thisWeekStart) thisWeek += Number(t.amount);
       else if (t.date >= lastWeekStart && t.date < thisWeekStart) lastWeek += Number(t.amount);
     });
-    return {
-      thisWeek: Math.round(thisWeek * 100) / 100,
-      lastWeek: Math.round(lastWeek * 100) / 100
-    };
+    return { thisWeek: Math.round(thisWeek * 100) / 100, lastWeek: Math.round(lastWeek * 100) / 100 };
   }, [transactions]);
 
-  // ── TOP MERCHANTS DATA ────────────────────────────────────────────────────
+  // === Top merchants ===
   const topMerchants = useMemo(() => {
     const map: Record<string, number> = {};
     dateFiltered.forEach((t) => {
-      const key = t.description; // Use transaction description as merchant name
+      const key = t.description;
       map[key] = (map[key] || 0) + Number(t.amount);
     });
     return Object.entries(map)
-      .sort(([, a], [, b]) => b - a) // Sort by amount descending
-      .slice(0, 5) // Top 5 merchants
-      .map(([name, value]) => ({
-        name,
-        value: Math.round(value * 100) / 100
-      }));
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([name, value]) => ({ name, value: Math.round(value * 100) / 100 }));
   }, [dateFiltered]);
 
-  // ── CUSTOM TOOLTIP COMPONENT ──────────────────────────────────────────────
-  // Reusable tooltip component for all charts with consistent styling
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload?.length) {
       return (
@@ -157,57 +124,32 @@ export default function Forecasts() {
     return null;
   };
 
-  // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <div>
-      {/* Page Header */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-foreground">Analytics & Forecasts</h2>
         <p className="text-sm text-muted-foreground mt-1">Visual breakdown of your spending</p>
       </div>
 
-      {/* Filters Section - Date range, category selection, and week comparison */}
+      {/* Filters */}
       <div className="bg-card rounded-xl p-5 shadow-sm mb-6">
-        <h3 className="text-sm font-bold text-card-foreground mb-3 flex items-center gap-2">
-          <Filter className="h-4 w-4" /> Custom Insights
-        </h3>
+        <h3 className="text-sm font-bold text-card-foreground mb-3 flex items-center gap-2"><Filter className="h-4 w-4" /> Custom Insights</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Date From Filter */}
           <div>
             <label className="text-xs font-semibold text-card-foreground/60 mb-1 block">From</label>
-            <input
-              type="date"
-              value={dateFrom}
-              onChange={(e) => setDateFrom(e.target.value)}
-              className="w-full bg-muted rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+            <input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-full bg-muted rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
           </div>
-
-          {/* Date To Filter */}
           <div>
             <label className="text-xs font-semibold text-card-foreground/60 mb-1 block">To</label>
-            <input
-              type="date"
-              value={dateTo}
-              onChange={(e) => setDateTo(e.target.value)}
-              className="w-full bg-muted rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+            <input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-full bg-muted rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring" />
           </div>
-
-          {/* Category Filter */}
           <div>
             <label className="text-xs font-semibold text-card-foreground/60 mb-1 block">Category</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full bg-muted rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            >
+            <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full bg-muted rounded-lg px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
               <option value="all">All Categories</option>
               {categories.map((c) => <option key={c} value={c}>{c}</option>)}
             </select>
           </div>
-
-          {/* Week Comparison Display */}
           <div>
             <label className="text-xs font-semibold text-card-foreground/60 mb-1 block">Week vs Week</label>
             <div className="flex gap-2 text-sm">
@@ -224,9 +166,9 @@ export default function Forecasts() {
         </div>
       </div>
 
-      {/* Charts Grid - Two-column layout for pie and bar charts */}
+      {/* Charts Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        {/* Pie Chart: Spending by Category */}
+        {/* Pie Chart */}
         <div className="bg-card rounded-xl p-5 shadow-sm">
           <h3 className="text-sm font-bold text-card-foreground mb-4">Spending by Category</h3>
           {categoryData.length === 0 ? (
@@ -236,7 +178,8 @@ export default function Forecasts() {
               <PieChart>
                 <Pie
                   data={categoryData}
-                  cx="50%" cy="50%"
+                  cx="50%"
+                  cy="50%"
                   outerRadius={100}
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -248,11 +191,7 @@ export default function Forecasts() {
                       fill={CHART_COLORS[i % CHART_COLORS.length]}
                       stroke={i === maxCategoryIndex ? "hsl(var(--foreground))" : "transparent"}
                       strokeWidth={i === maxCategoryIndex ? 3 : 0}
-                      style={i === maxCategoryIndex ? {
-                        filter: "brightness(1.15)",
-                        transform: "scale(1.03)",
-                        transformOrigin: "center"
-                      } : {}}
+                      style={i === maxCategoryIndex ? { filter: "brightness(1.15)", transform: "scale(1.03)", transformOrigin: "center" } : {}}
                     />
                   ))}
                 </Pie>
@@ -262,7 +201,7 @@ export default function Forecasts() {
           )}
         </div>
 
-        {/* Bar Chart: Daily Spending */}
+        {/* Bar Chart */}
         <div className="bg-card rounded-xl p-5 shadow-sm">
           <h3 className="text-sm font-bold text-card-foreground mb-4">
             Daily Spending {selectedCategory !== "all" && `(${selectedCategory})`}
@@ -283,7 +222,7 @@ export default function Forecasts() {
         </div>
       </div>
 
-      {/* Category Trend Line Chart - Only shown when specific category selected */}
+      {/* Category Trend Line */}
       {selectedCategory !== "all" && categoryTrend.length > 0 && (
         <div className="bg-card rounded-xl p-5 shadow-sm mb-6">
           <h3 className="text-sm font-bold text-card-foreground mb-4 flex items-center gap-2">
@@ -295,19 +234,13 @@ export default function Forecasts() {
               <XAxis dataKey="date" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
               <YAxis tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
               <Tooltip content={<CustomTooltip />} />
-              <Line
-                type="monotone"
-                dataKey="total"
-                stroke="hsl(352, 36%, 43%)"
-                strokeWidth={2}
-                dot={{ fill: "hsl(352, 36%, 43%)" }}
-              />
+              <Line type="monotone" dataKey="total" stroke="hsl(352, 36%, 43%)" strokeWidth={2} dot={{ fill: "hsl(352, 36%, 43%)" }} />
             </LineChart>
           </ResponsiveContainer>
         </div>
       )}
 
-      {/* Top Merchants List - Shows highest spending merchants */}
+      {/* Top Merchants */}
       <div className="bg-card rounded-xl p-5 shadow-sm">
         <h3 className="text-sm font-bold text-card-foreground mb-4">Top 5 Merchants</h3>
         {topMerchants.length === 0 ? (
@@ -316,15 +249,9 @@ export default function Forecasts() {
           <div className="space-y-3">
             {topMerchants.map((m, i) => (
               <div key={m.name} className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
-                  {i + 1}
-                </span>
-                <span className="flex-1 text-sm font-medium text-card-foreground truncate">
-                  {m.name}
-                </span>
-                <span className="text-sm font-bold text-card-foreground">
-                  {format(m.value)}
-                </span>
+                <span className="w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                <span className="flex-1 text-sm font-medium text-card-foreground truncate">{m.name}</span>
+                <span className="text-sm font-bold text-card-foreground">{format(m.value)}</span>
               </div>
             ))}
           </div>
