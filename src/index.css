@@ -1,50 +1,57 @@
+/* Import Google Fonts - Quicksand font family for consistent typography */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
+/* Import Tailwind CSS layers - base styles, component classes, and utility classes */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Base layer for CSS custom properties and global styles */
 @layer base {
+  /* Light theme color variables - defines the color palette for light mode */
   :root {
+    /* Font family - uses Quicksand for a modern, friendly appearance */
     --font-sans: 'Quicksand', sans-serif;
 
-    /* Light Silver background */
+    /* Background and foreground colors - light silver background with dark text */
     --background: 0 4% 85%;
     --foreground: 0 0% 15%;
 
-    /* Cards - Pastel Blue */
+    /* Card colors - pastel blue background for card components */
     --card: 198 15% 75%;
     --card-foreground: 0 0% 15%;
 
-    /* Popover */
+    /* Popover colors - slightly lighter background for overlay elements */
     --popover: 0 4% 90%;
     --popover-foreground: 0 0% 15%;
 
-    /* Primary - Quinacridone Magenta */
+    /* Primary colors - quinacridone magenta for main actions and links */
     --primary: 352 36% 43%;
     --primary-foreground: 0 0% 98%;
 
-    /* Secondary - Grullo */
+    /* Secondary colors - grullo (grayish brown) for secondary elements */
     --secondary: 356 10% 62%;
     --secondary-foreground: 0 0% 98%;
 
-    /* Muted */
+    /* Muted colors - for less prominent text and backgrounds */
     --muted: 0 4% 80%;
     --muted-foreground: 0 0% 35%;
 
-    /* Accent - Middle Red Purple (buttons/warnings) */
+    /* Accent colors - middle red purple for buttons and warnings */
     --accent: 1 29% 47%;
     --accent-foreground: 0 0% 98%;
 
+    /* Destructive colors - same as accent for error states */
     --destructive: 1 29% 47%;
     --destructive-foreground: 0 0% 98%;
 
+    /* Border and input colors - subtle gray for form elements */
     --border: 0 4% 75%;
     --input: 0 4% 75%;
     --ring: 352 36% 43%;
     --radius: 0.75rem;
 
-    /* Sidebar - Grullo */
+    /* Sidebar colors - grullo theme for navigation sidebar */
     --sidebar-background: 356 10% 62%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 352 36% 43%;
@@ -54,7 +61,7 @@
     --sidebar-border: 356 10% 55%;
     --sidebar-ring: 352 36% 43%;
 
-    /* Chat specific */
+    /* Chat component colors - specific colors for chat interface */
     --chat-header: 352 36% 43%;
     --chat-header-foreground: 0 0% 98%;
     --chat-user: 356 10% 62%;
@@ -63,7 +70,9 @@
     --chat-bot-foreground: 0 0% 15%;
   }
 
+  /* Dark theme color variables - darker variants for night mode */
   .dark {
+    /* Dark background with light text for better contrast */
     --background: 0 4% 12%;
     --foreground: 0 0% 90%;
 
@@ -73,6 +82,7 @@
     --popover: 0 4% 15%;
     --popover-foreground: 0 0% 90%;
 
+    /* Slightly brighter primary colors for dark mode */
     --primary: 352 36% 50%;
     --primary-foreground: 0 0% 98%;
 
@@ -92,6 +102,7 @@
     --input: 0 4% 22%;
     --ring: 352 36% 50%;
 
+    /* Dark sidebar colors */
     --sidebar-background: 356 10% 18%;
     --sidebar-foreground: 0 0% 90%;
     --sidebar-primary: 352 36% 50%;
@@ -101,6 +112,7 @@
     --sidebar-border: 356 10% 25%;
     --sidebar-ring: 352 36% 50%;
 
+    /* Dark chat colors - adjusted for dark theme */
     --chat-header: 352 36% 35%;
     --chat-header-foreground: 0 0% 98%;
     --chat-user: 356 10% 30%;
@@ -110,10 +122,14 @@
   }
 }
 
+/* Additional base layer styles for global elements */
 @layer base {
+  /* Apply border color to all elements */
   * {
     @apply border-border;
   }
+
+  /* Body styles - set background, text color, and font family */
   body {
     @apply bg-background text-foreground;
     font-family: 'Quicksand', sans-serif;

@@ -1,8 +1,6 @@
 -- =============================================================
--- Budget Buddy AI — Consolidated Schema (Standalone Migration)
--- =============================================================
--- This replaces all individual Lovable-generated migration files.
--- Safe to run on a fresh Supabase project.
+-- FinBuddy AI — Consolidated Schema Migration
+-- This SQL file consolidates all schema changes for the FinBuddy AI application into a single migration.
 -- =============================================================
 
 -- ─── Extensions ───────────────────────────────────────────────
