@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Mail, Lock, User, ArrowRight } from "lucide-react";
 // Auth Page Component
 // This component handles user authentication (sign in and sign up) for the FinBuddy application
 // Uses Supabase Auth for backend authentication services

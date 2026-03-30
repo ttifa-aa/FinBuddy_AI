@@ -38,10 +38,10 @@ const Index = () => {
   // ── RENDER ───────────────────────────────────────────────────────────────
   return (
     <>
-      // Alert Banner - Shows important notifications and alerts
+      {/* Alert Banner - Shows important notifications and alerts */}
       <AlertBanner />
 
-      // Page Header - Displays current month and year
+      {/* Page Header - Displays current month and year */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold text-foreground">Dashboard</h2>
         <p className="text-sm text-muted-foreground mt-1">
@@ -49,9 +49,9 @@ const Index = () => {
         </p>
       </div>
 
-      // Financial Metrics Cards - Three key financial indicators
+      {/* Financial Metrics Cards - Three key financial indicators */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
-        // Total Spending Card - Shows current month's spending
+        {/* Total Spending Card - Shows current month's spending */}
         <MetricCard
           title="Total Spending"
           value={format(spending)}
@@ -59,46 +59,43 @@ const Index = () => {
           icon={<span className="text-lg font-bold leading-none">{symbol}</span>}
         />
 
-        // Forecast Card - Shows projected monthly total based on spending patterns
+        {/* Forecast Card - Shows projected monthly total based on spending patterns */}
         <MetricCard
           title="Forecast (30-day)"
           value={format(forecast)}
           subtitle="Projected monthly total"
           icon={TrendingUp}
-          variant={forecast > budget ? "warning" : "default"} // Warning if forecast exceeds budget
+          variant={forecast > budget ? "warning" : "default"}
         />
 
-        // Remaining Budget Card - Shows how much budget is left
+        {/* Remaining Budget Card - Shows how much budget is left */}
         <MetricCard
           title="Remaining Budget"
           value={format(savings)}
           subtitle={`of ${format(budget)} budget`}
           icon={PiggyBank}
-          variant={savings < 0 ? "warning" : "default"} // Warning if over budget
+          variant={savings < 0 ? "warning" : "default"}
         />
       </div>
 
-      // Main Content Grid - Transaction table and notifications
+      {/* Main Content Grid - Transaction table and notifications */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        // Transaction Table Section - Takes up 2/3 of the width on large screens
+        {/* Transaction Table Section - Takes up 2/3 of the width on large screens */}
         <div className="lg:col-span-2">
           {isLoading ? (
-            // Loading state while fetching transactions
             <div className="bg-card rounded-xl p-12 text-center text-card-foreground/60 font-medium">
               Loading transactions...
             </div>
           ) : transactions.length === 0 ? (
-            // Empty state when no transactions exist
             <div className="bg-card rounded-xl p-12 text-center text-card-foreground/60 font-medium">
               No transactions yet. Use the chat assistant to add your first expense!
             </div>
           ) : (
-            // Transaction table showing user's financial activity
             <TransactionTable transactions={transactions} />
           )}
         </div>
 
-        // Notification Feed Section - Takes up 1/3 of the width on large screens
+        {/* Notification Feed Section - Takes up 1/3 of the width on large screens */}
         <div>
           <NotificationFeed />
         </div>
