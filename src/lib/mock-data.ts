@@ -1,3 +1,7 @@
+// this file contains mock transaction data and utility functions for calculating totals, forecasts, savings, category breakdowns, and anomaly detection based on the transactions
+// it is used for testing and demonstration purposes, allowing us to simulate real transaction data without needing to connect to a live financial API
+// the functions provided here can be used in the application to perform various calculations and analyses on the transaction data, such as calculating total spending, forecasting future spending, calculating savings based on a budget, getting totals for specific categories, and flagging anomalous transactions that deviate significantly from typical spending patterns
+
 export interface Transaction {
   id: string;
   description: string;
