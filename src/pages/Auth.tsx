@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Lock, User, ArrowRight } from "lucide-react";
-// This component provides a user interface for signing in and signing up using Supabase authentication.
-// It includes form fields for email, password, and display name (for sign up), as well as error handling and loading states.
-// The component also allows users to toggle between the sign in and sign up forms, and displays appropriate messages based on the authentication process.
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -13,11 +11,11 @@ export default function Auth() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => { // handle form submission for both sign in and sign up
-    e.preventDefault(); // prevent the default form submission behavior to handle it with JavaScript
-    setError(""); // reset any existing error messages
-    setMessage(""); // reset any existing informational messages
-    setLoading(true); // set the loading state to true to indicate that an authentication process is in progress
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setMessage("");
+    setLoading(true);
 
     if (isLogin) {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -112,7 +110,7 @@ export default function Auth() {
           </button>
 
           <p className="text-center text-sm text-muted-foreground">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "} // toggle between sign in and sign up forms, and reset error and message states when toggling
+            {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
             <button
               type="button"
               onClick={() => { setIsLogin(!isLogin); setError(""); setMessage(""); }}
@@ -122,7 +120,7 @@ export default function Auth() {
             </button>
           </p>
         </form>
-          // Footer with copyright and credits
+
         <div className="text-center mt-6 text-xs text-muted-foreground space-y-1">
           <p>Copyright © 2026 Aatifa Tahmeed, Samreen Kausar, Sk. Musqan Khadri</p>
           <p>Dr. Jayashree Patil, Associate Professor</p>
