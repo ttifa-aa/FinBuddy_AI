@@ -159,7 +159,7 @@ export function ChatSidebar({ transactions }: ChatSidebarProps) {
           category: pendingExpense.category,
           date: pendingExpense.date,
         });
-        addMessage("bot", `✅ Saved!\n\nAmount: ${format(pendingExpense.amount)}\nCategory: ${pendingExpense.category}\nDescription: ${pendingExpense.description}`);
+        addMessage("bot", `✅ Saved! ${format(pendingExpense.amount)} for "${pendingExpense.description}" under **${pendingExpense.category}**.`);
         setPendingExpense(null);
         return;
       } else {
@@ -219,13 +219,15 @@ export function ChatSidebar({ transactions }: ChatSidebarProps) {
             date: expenseData.date || new Date().toISOString().split("T")[0],
             confidence: 0.9,
           });
-          // Show the reply without the raw expense block
-          const cleanReply = reply.replace(/\$\$EXPENSE:\{[\s\S]*?\}\$\$/, "").trim();
-          addMessage(
-            "bot",
-            cleanReply ||
-              `Amount: ${format(expenseData.amount)}\nCategory: ${expenseData.category}\nDescription: ${expenseData.description}\n\nIs this correct? (yes/no)`
-          );
+          // Always show a clean, consistent confirmation regardless of what the AI said
+          const confirmMsg =
+            `Got it! Here's what I'll log:\n\n` +
+            `**Amount:** ${format(expenseData.amount)}\n` +
+            `**Category:** ${expenseData.category}\n` +
+            `**Description:** ${expenseData.description}\n` +
+            `**Date:** ${expenseData.date || new Date().toISOString().split("T")[0]}\n\n` +
+            `Is this correct? Reply **yes** to save or **no** to cancel.`;
+          addMessage("bot", confirmMsg);
         } catch {
           addMessage("bot", reply);
         }
