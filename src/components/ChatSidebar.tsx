@@ -159,7 +159,7 @@ export function ChatSidebar({ transactions }: ChatSidebarProps) {
           category: pendingExpense.category,
           date: pendingExpense.date,
         });
-        addMessage("bot", `✅ Saved! ${format(pendingExpense.amount)} for "${pendingExpense.description}" under **${pendingExpense.category}**.`);
+        addMessage("bot", `✅ Saved!\n\nAmount: ${format(pendingExpense.amount)}\nCategory: ${pendingExpense.category}\nDescription: ${pendingExpense.description}`);
         setPendingExpense(null);
         return;
       } else {
@@ -221,7 +221,11 @@ export function ChatSidebar({ transactions }: ChatSidebarProps) {
           });
           // Show the reply without the raw expense block
           const cleanReply = reply.replace(/\$\$EXPENSE:\{[\s\S]*?\}\$\$/, "").trim();
-          addMessage("bot", cleanReply || `Log **${format(expenseData.amount)}** for "${expenseData.description}" → **${expenseData.category}**?\n\nSave this? (yes/no)`);
+          addMessage(
+            "bot",
+            cleanReply ||
+              `Amount: ${format(expenseData.amount)}\nCategory: ${expenseData.category}\nDescription: ${expenseData.description}\n\nIs this correct? (yes/no)`
+          );
         } catch {
           addMessage("bot", reply);
         }
