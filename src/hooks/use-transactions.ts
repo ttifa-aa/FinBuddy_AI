@@ -1,6 +1,6 @@
 -- =============================================================
 -- FinBuddy AI — Consolidated Schema Migration
--- This SQL file consolidates all schema changes for the FinBuddy AI application into a single migration.
+-- This SQL file consolidates all schema changes for the FinBuddy AI application into a single migration
 -- =============================================================
 
 -- ─── Extensions ───────────────────────────────────────────────
