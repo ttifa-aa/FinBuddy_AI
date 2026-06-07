@@ -115,7 +115,7 @@ export function useUpdateProfile() {
   const { user } = useAuth();
 
   return useMutation({
-    mutationFn: async (updates: { monthly_budget?: number; currency?: string }) => {
+    mutationFn: async (updates: { monthly_budget?: number; currency?: string; email_daily_reminders?: boolean; email_overspending_alerts?: boolean }) => {
       const { data, error } = await supabase
         .from("profiles")
         .update(updates as any)
